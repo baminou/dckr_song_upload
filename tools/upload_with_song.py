@@ -16,7 +16,7 @@ def create_manifest(api,analysis_id):
     manifest = Manifest(analysis_id)
     for file_object in api.get_analysis_files(analysis_id):
         manifest_entry = ManifestEntry.create_manifest_entry(file_object)
-        manifest_entry.fileName = './'+manifest_entry.fileName
+        manifest_entry.fileName = os.getcwd()+'/'+manifest_entry.fileName
         manifest.add_entry(manifest_entry)
     return manifest
 
