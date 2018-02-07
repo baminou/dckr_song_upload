@@ -16,7 +16,7 @@ def create_manifest(api,analysis_id, files_dir):
     manifest = Manifest(analysis_id)
     for file_object in api.get_analysis_files(analysis_id):
         manifest_entry = ManifestEntry.create_manifest_entry(file_object)
-        manifest_entry.fileName = files_dir+manifest_entry.fileName
+        manifest_entry.fileName = os.path.join(files_dir,manifest_entry.fileName)
         manifest.add_entry(manifest_entry)
     return manifest
 
@@ -58,16 +58,16 @@ def main():
 
     manifest_filename = results.output
     manifest_client = ManifestClient(api)
-    manifest = create_manifest(api,client.analysis_id,os.path.dirname(manifest_filename))
+    manifest = create_manifest(api,client.analysis_id,os.path.dirname(os.path.abspath(manifest_filename)))
 
     with open(manifest_filename, 'w') as fh:
         fh.write(str(manifest))
 
-    subprocess.check_output(['icgc-storage-client','upload','--manifest',os.path.join(os.getcwd(),manifest_filename), '--force'])
+    subprocess.check_output(['icgc-storage-client','upload','--manifest',manifest_filename, '--force'])
 
-    requests.put(results.server_url+'/studies/'+results.study_id+'/analysis/publish/'+client.analysis_id,
-                 headers={"Accept": "application/json", "Content-Type": "application/json",
-                          "Authorization": "Bearer "+results.access_token})
+    #requests.put(results.server_url+'/studies/'+results.study_id+'/analysis/publish/'+client.analysis_id,
+    #             headers={"Accept": "application/json", "Content-Type": "application/json",
+    #                      "Authorization": "Bearer "+results.access_token})
 
 if __name__ == "__main__":
     main()
