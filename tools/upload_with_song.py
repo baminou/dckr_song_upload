@@ -63,7 +63,7 @@ def main():
     with open(manifest_filename, 'w') as fh:
         fh.write(str(manifest))
 
-    subprocess.check_output(['icgc-storage-client','upload','--manifest',os.path.join(os.getcwd(),manifest_filename), '--force'])
+    subprocess.check_output(['icgc-storage-client','upload','--profile','collab','--manifest',os.path.join(os.getcwd(),manifest_filename), '--force'])
 
     requests.put(results.server_url+'/studies/'+results.study_id+'/analysis/publish/'+client.analysis_id,
                  headers={"Accept": "application/json", "Content-Type": "application/json",
