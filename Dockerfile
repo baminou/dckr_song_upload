@@ -22,6 +22,12 @@ RUN mkdir /icgc-storage-client
 RUN wget -O icgc-storage-client.tar.gz https://dcc.icgc.org/api/v1/ui/software/icgc-storage-client/latest
 RUN tar -zxvf icgc-storage-client.tar.gz -C /icgc-storage-client --strip-components=1
 
+#RUN touch /icgc-storage-client/conf/application-aws.properties
+RUN echo "accessToken=\$ACCESSTOKEN" > /icgc-storage-client/conf/application-aws.properties
+RUN echo "storage.url=http://10.10.0.210:8087" >> /icgc-storage-client/conf/application-aws.properties
+RUN echo "metadata.url=http://10.10.0.210:8080" >> /icgc-storage-client/conf/application-aws.properties
+RUN echo "logging.file=./storage-client.log" >> /icgc-storage-client/conf/application-aws.properties
+
 RUN mkdir /scripts
 RUN wget https://raw.githubusercontent.com/baminou/dckr_song_upload/master/tools/upload_with_song.py -O /scripts/upload
 
