@@ -12,11 +12,11 @@ import subprocess
 import requests
 
 
-def create_manifest(api,analysis_id):
+def create_manifest(api,analysis_id, files_dir):
     manifest = Manifest(analysis_id)
     for file_object in api.get_analysis_files(analysis_id):
         manifest_entry = ManifestEntry.create_manifest_entry(file_object)
-        manifest_entry.fileName = os.getcwd()+'/'+manifest_entry.fileName
+        manifest_entry.fileName = files_dir+manifest_entry.fileName
         manifest.add_entry(manifest_entry)
     return manifest
 
@@ -58,7 +58,7 @@ def main():
 
     manifest_filename = results.output
     manifest_client = ManifestClient(api)
-    manifest = create_manifest(api,client.analysis_id)
+    manifest = create_manifest(api,client.analysis_id,os.path.dirname(manifest_filename))
 
     with open(manifest_filename, 'w') as fh:
         fh.write(str(manifest))
