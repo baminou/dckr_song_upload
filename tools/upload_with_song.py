@@ -37,6 +37,7 @@ def main():
     parser.add_argument('-p', '--payload', dest="payload", help="JSON Payload", required=True)
     parser.add_argument('-o', '--output', dest="output", help="Output manifest file", required=True)
     parser.add_argument('-t', '--access-token', dest="access_token", default=os.environ.get('ACCESSTOKEN',None),help="Server URL")
+    parser.add_argument('-j','--json',dest="json_output")
     results = parser.parse_args()
 
     study_id = results.study_id
@@ -64,6 +65,20 @@ def main():
         fh.write(str(manifest))
 
     subprocess.check_output(['icgc-storage-client','upload','--manifest',manifest_filename, '--force'])
+
+    if results.json_output:
+        with open(manifest_filename,'r') as f:
+            manifest_json = {}
+            manifest_json['analysis_id'] = f.readline().split('\t')[0]
+            manifest_json['files'] = []
+            for line in f.readlines():
+                _file = {}
+                _file['object_id'] = line.split('\t')[0]
+                _file['file_name'] = line.split('\t')[1]
+                _file['md5'] = line.split('\t')[2]
+                manifest_json['files'].append(_file)
+            with open(results.json_output,'w') as outfile:
+                json.dump(manifest_json, outfile)
 
     #requests.put(results.server_url+'/studies/'+results.study_id+'/analysis/publish/'+client.analysis_id,
     #             headers={"Accept": "application/json", "Content-Type": "application/json",
