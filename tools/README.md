@@ -9,5 +9,5 @@ python3 upload_with_song.py --help
 
 ## How to run
 ```bash
-upload_with_song.py -p /app/payload.json -s {STUDY_ID} -u {SONG_HOST} -o /app/manifest.txt -j /app/manifest.json
+upload_with_song.py -p payload.json -s {STUDY_ID} -u {SONG_HOST} -o manifest.txt -j manifest.json
 ```
