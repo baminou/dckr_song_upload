@@ -34,8 +34,8 @@ RUN tar -zxvf icgc-storage-client.tar.gz -C /icgc-storage-client --strip-compone
 
 #RUN touch /icgc-storage-client/conf/application-aws.properties
 RUN echo "accessToken=\$ACCESSTOKEN" > /icgc-storage-client/conf/application-aws.properties
-RUN echo "storage.url=http://10.10.0.210:8087" >> /icgc-storage-client/conf/application-aws.properties
-RUN echo "metadata.url=http://10.10.0.210:8080" >> /icgc-storage-client/conf/application-aws.properties
+RUN echo "storage.url=\$STORAGEURL" >> /icgc-storage-client/conf/application-aws.properties
+RUN echo "metadata.url=\$METADATAURL" >> /icgc-storage-client/conf/application-aws.properties
 RUN echo "logging.file=./storage-client.log" >> /icgc-storage-client/conf/application-aws.properties
 
 RUN mkdir /scripts
