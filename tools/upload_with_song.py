@@ -17,8 +17,8 @@ def create_manifest(api,analysis_id, manifest_file,files_dir):
     with open(os.path.join(files_dir,manifest_file), 'w') as outfile:
         outfile.write(analysis_id+'\t\t\n')
         for i in range(0,len(api.get_analysis_files(analysis_id))):
-            file_object = json.loads(str(api.get_analysis_files(analysis_id)[i]))
-            outfile.write(file_object.get('objectId')+'\t'+os.path.join(files_dir,file_object.get('fileName'))+'\t'+file_object.get('fileMd5sum')+'\n')
+            file_object = api.get_analysis_files(analysis_id)[i]
+            outfile.write(file_object.objectId+'\t'+os.path.join(files_dir,file_object.fileName)+'\t'+file_object.fileMd5sum+'\n')
 
 def main():
     parser = argparse.ArgumentParser(description='Generate a song payload using minimal arguments')
@@ -35,21 +35,23 @@ def main():
     server_url = results.server_url
     access_token = results.access_token
     payload = results.payload
+    analysis_id = json.load(open(payload)).get('analysisId')
 
     config = ApiConfig(server_url,study_id,access_token, debug=True)
     api = Api(config)
 
-    study_client = StudyClient(api)
-
-    client = FileUploadClient(api, payload, is_async_validation=True,ignore_analysis_id_collisions=True)
-
-    client.upload()
-    client.update_status()
-    #api.save(client.upload_id, ignore_analysis_id_collisions=True)
-    client.save()
+    try:
+        print(api.get_analysis_files(analysis_id)[0])
+    except Exception:
+        client = FileUploadClient(api, payload, is_async_validation=True,ignore_analysis_id_collisions=True)
+        client.upload()
+        client.update_status()
+        client.save()
+        analysis_id = client.analysis_id
 
     manifest_filename = results.output
-    create_manifest(api,client.analysis_id,manifest_filename,results.input_dir)
+    create_manifest(api,analysis_id,manifest_filename,results.input_dir)
+
 
     subprocess.check_output(['icgc-storage-client','upload','--manifest',os.path.join(results.input_dir,manifest_filename), '--force'])
 
