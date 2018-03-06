@@ -20,6 +20,18 @@ def create_manifest(api,analysis_id, manifest_file,files_dir):
             file_object = api.get_analysis_files(analysis_id)[i]
             outfile.write(file_object.objectId+'\t'+os.path.join(files_dir,file_object.fileName)+'\t'+file_object.fileMd5sum+'\n')
 
+def exists_in_file_array(file_name, file_md5, file_size, file_type, file_access, files_array):
+    for i in range(0, len(files_array)):
+        if file_name == files_array[i].get('fileName') and \
+            file_md5 == files_array[i].get('fileMd5sum') and\
+            file_size == files_array[i].get('fileSize') and \
+            file_type == files_array[i].get('fileType') and \
+            file_access == files_array[i].get('fileAccess'):
+            return True
+    return False
+
+
+
 def main():
     parser = argparse.ArgumentParser(description='Generate a song payload using minimal arguments')
     parser.add_argument('-s', '--study-id', dest="study_id", help="Study ID", required=True)
@@ -40,14 +52,29 @@ def main():
     config = ApiConfig(server_url,study_id,access_token, debug=True)
     api = Api(config)
 
+    client = FileUploadClient(api, payload, is_async_validation=True, ignore_analysis_id_collisions=True)
+
+    analysis = None
     try:
-        print(api.get_analysis_files(analysis_id)[0])
+        analysis = api.get_analysis(analysis_id)
+        payload_files = json.load(open(payload)).get('file')
+        api_files = api.get_analysis_files(analysis_id)
+
+        for i in range(0,len(api_files)):
+            if not exists_in_file_array(
+                file_name = api_files[i].fileName,
+                file_md5 = api_files[i].fileMd5sum,
+                file_type = api_files[i].fileType,
+                file_size = api_files[i].fileSize,
+                file_access = api_files[i].fileAccess,
+                files_array = payload_files):
+                print("Files in  payload do not match the files on song server.")
+                exit(1)
     except Exception:
-        client = FileUploadClient(api, payload, is_async_validation=True,ignore_analysis_id_collisions=True)
-        client.upload()
-        client.update_status()
-        client.save()
-        analysis_id = client.analysis_id
+        if analysis is None:
+            client.upload()
+            client.update_status()
+            client.save()
 
     manifest_filename = results.output
     create_manifest(api,analysis_id,manifest_filename,results.input_dir)
