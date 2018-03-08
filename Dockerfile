@@ -3,8 +3,6 @@ FROM ubuntu:16.04
 MAINTAINER Name <brice.aminou@gmail.com>
 
 RUN apt-get update && apt-get install -y git && apt-get install -y wget
-#RUN apt-get install -y python3-pip
-#RUN pip3 install overture_song
 
 RUN apt-get update && apt-get install -y software-properties-common && apt-get install -y python-software-properties
 RUN \
@@ -26,7 +24,10 @@ RUN update-alternatives --config python3
 
 RUN apt-get install -y python3-pip
 RUN pip3 install dataclasses==0.3
-RUN pip3 install overture_song
+
+RUN git clone https://github.com/overture-stack/song.git /song_current
+RUN pip3 install /song_current/song-python-sdk
+#RUN pip3 install overture_song
 
 RUN mkdir /icgc-storage-client
 RUN wget -O icgc-storage-client.tar.gz https://dcc.icgc.org/api/v1/ui/software/icgc-storage-client/latest
