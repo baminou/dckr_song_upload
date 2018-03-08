@@ -82,7 +82,8 @@ def main():
 
     subprocess.check_output(['icgc-storage-client','upload','--manifest',os.path.join(results.input_dir,manifest_filename), '--force'])
 
-    client.publish()
+    api.publish(analysis_id)
+    #client.publish()
 
     if results.json_output:
         with open(os.path.join(results.input_dir,manifest_filename),'r') as f:
