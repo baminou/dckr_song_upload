@@ -57,6 +57,10 @@ def main():
     analysis = None
     try:
         analysis = api.get_analysis(analysis_id)
+
+        if analysis is '':
+            raise Exception('Analysis id ' + analysis_id + ' not found')
+
         payload_files = json.load(open(payload)).get('file')
         api_files = api.get_analysis_files(analysis_id)
 
@@ -71,7 +75,7 @@ def main():
                 print("Files in  payload do not match the files on song server.")
                 exit(1)
     except Exception:
-        if analysis is None:
+        if analysis is None or analysis is '':
             client.upload()
             client.update_status()
             client.save()
