@@ -98,7 +98,7 @@ def main():
                 _file = {}
                 _file['object_id'] = line.split('\t')[0]
                 _file['file_name'] = line.split('\t')[1]
-                _file['md5'] = line.split('\t')[2]
+                _file['md5'] = line.split('\t')[2].strip('\n')
                 manifest_json['files'].append(_file)
             with open(os.path.join(results.input_dir,results.json_output),'w') as outfile:
                 json.dump(manifest_json, outfile)
