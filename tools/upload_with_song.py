@@ -58,7 +58,7 @@ def main():
     try:
         analysis = api.get_analysis(analysis_id)
 
-        if analysis is '':
+        if analysis.analysisId is '':
             raise Exception('Analysis id ' + analysis_id + ' not found')
 
         payload_files = json.load(open(payload)).get('file')
