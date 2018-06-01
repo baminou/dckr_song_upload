@@ -40,7 +40,7 @@ RUN echo "metadata.url=\${METADATAURL}" >> /icgc-storage-client/conf/application
 RUN echo "logging.file=./storage-client.log" >> /icgc-storage-client/conf/application-aws.properties
 
 RUN mkdir /scripts
-RUN wget https://raw.githubusercontent.com/baminou/dckr_song_upload/master/tools/upload_with_song.py -O /scripts/upload
+RUN wget https://raw.githubusercontent.com/baminou/dckr_song_upload/master/tools/upload_with_song2.py -O /scripts/upload
 
 RUN chmod +x /scripts/upload
 
