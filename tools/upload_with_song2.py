@@ -61,11 +61,11 @@ def main():
     api_config = ApiConfig(server_url,study_id,access_token)
     api = Api(api_config)
 
+    upload_status = upload_payload(api,payload_file)
     try:
-        api.get_analysis(analysis_id)
-    except SongError as e:
-        upload_status = upload_payload(api,payload_file)
         api.save(upload_status.uploadId, ignore_analysis_id_collisions=True)
+    except:
+        pass
 
     validate_payload_against_analysis(api, analysis_id, payload_file)
 
