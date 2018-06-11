@@ -61,18 +61,22 @@ def main():
     api_config = ApiConfig(server_url,study_id,access_token)
     api = Api(api_config)
 
-    upload_status = upload_payload(api,payload_file)
     try:
+        api.get_analysis(analysis_id)
+    except SongError as e:
+        upload_status = upload_payload(api,payload_file)
         api.save(upload_status.uploadId, ignore_analysis_id_collisions=True)
-    except:
-        pass
 
     validate_payload_against_analysis(api, analysis_id, payload_file)
 
     manifest_filename = results.output
     create_manifest(api,analysis_id,manifest_filename,results.input_dir)
     subprocess.check_output(['icgc-storage-client','upload','--manifest',os.path.join(results.input_dir,manifest_filename), '--force'])
-    api.publish(analysis_id)
+
+    try:
+        api.publish(analysis_id)
+    except:
+        pass
 
     if results.json_output:
         with open(os.path.join(results.input_dir,manifest_filename),'r') as f:
