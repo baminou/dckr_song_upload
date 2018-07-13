@@ -25,9 +25,10 @@ RUN update-alternatives --config python3
 RUN apt-get install -y python3-pip
 RUN pip3 install dataclasses==0.3
 
-RUN git clone https://github.com/overture-stack/song.git /song_current
-RUN pip3 install /song_current/song-python-sdk
+#RUN git clone https://github.com/overture-stack/song.git /song_current
+#RUN pip3 install /song_current/song-python-sdk
 #RUN pip3 install overture_song
+RUN pip3 install overture-song==1.1.0
 
 RUN mkdir /icgc-storage-client
 RUN wget -O icgc-storage-client.tar.gz https://dcc.icgc.org/api/v1/ui/software/icgc-storage-client/latest
