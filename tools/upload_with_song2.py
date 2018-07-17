@@ -67,7 +67,7 @@ def main():
     except:
         pass
 
-    validate_payload_against_analysis(api, analysis_id, payload_file)
+    #validate_payload_against_analysis(api, analysis_id, payload_file)
 
     manifest_filename = results.output
     create_manifest(api,analysis_id,manifest_filename,results.input_dir)
