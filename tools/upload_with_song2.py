@@ -62,10 +62,7 @@ def main():
     api = Api(api_config)
 
     upload_status = upload_payload(api,payload_file)
-    try:
-        api.save(upload_status.uploadId, ignore_analysis_id_collisions=True)
-    except:
-        pass
+    api.save(upload_status.uploadId, ignore_analysis_id_collisions=True)
 
     #validate_payload_against_analysis(api, analysis_id, payload_file)
 
