@@ -25,7 +25,7 @@ def upload_payload(api, payload_file):
     upload_status = api.status(api_upload.uploadId)
 
     if not upload_status.state == 'VALIDATED':
-        raise Exception("Song upload could not be validated - Analysis id "+upload_status.analysisId)
+        raise Exception("Song upload could not be validated - Analysis id "+upload_status.analysisId+", Current State: "+upload_status.state)
     return upload_status
 
 def validate_payload_against_analysis(api,analysis_id, payload_file):
@@ -64,9 +64,10 @@ def main():
     upload_status = upload_payload(api,payload_file)
     try:
         api.save(upload_status.uploadId, ignore_analysis_id_collisions=True)
-    except:
-        pass
-
+    except Exception as e:
+        song_error = json.loads(str(e))
+        if song_error.get('errorId') != "duplicate.analysis.attempt":
+            raise e
     #validate_payload_against_analysis(api, analysis_id, payload_file)
 
     manifest_filename = results.output
