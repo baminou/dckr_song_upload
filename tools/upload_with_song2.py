@@ -68,7 +68,9 @@ def main():
         song_error = json.loads(str(e))
         if song_error.get('errorId') != "duplicate.analysis.attempt":
             raise e
-    #validate_payload_against_analysis(api, analysis_id, payload_file)
+
+    if api.get_analysis(analysis_id).__dict__['analysisState'] == "PUBLISHED":
+        validate_payload_against_analysis(api, analysis_id, payload_file)
 
     manifest_filename = results.output
     create_manifest(api,analysis_id,manifest_filename,results.input_dir)
