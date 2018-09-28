@@ -39,8 +39,9 @@ RUN echo "accessToken=\$ACCESSTOKEN" > /icgc-storage-client/conf/application-aws
 RUN echo "storage.url=\${STORAGEURL}" >> /icgc-storage-client/conf/application-aws.properties
 RUN echo "metadata.url=\${METADATAURL}" >> /icgc-storage-client/conf/application-aws.properties
 RUN echo "logging.file=./storage-client.log" >> /icgc-storage-client/conf/application-aws.properties
-RUN echo "logging.level.bio.overture.score=DEBUG" >> /icgc-storage-client/conf/application-aws.properties
+RUN echo "logging.level.bio.overture.score=TRACE" >> /icgc-storage-client/conf/application-aws.properties
 RUN echo "logging.level.org.springframework.retry=TRACE" >> /icgc-storage-client/conf/application-aws.properties
+RUN echo "logging.level.org.springframework.web=DEBUG" >> /icgc-storage-client/conf/application-aws.properties
 RUN echo "logging.level.com.amazonaws.services=TRACE" >> /icgc-storage-client/conf/application-aws.properties
 
 RUN mkdir /scripts
