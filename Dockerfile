@@ -43,6 +43,7 @@ RUN echo "logging.level.bio.overture.score=TRACE" >> /icgc-storage-client/conf/a
 RUN echo "logging.level.org.springframework.retry=TRACE" >> /icgc-storage-client/conf/application-aws.properties
 RUN echo "logging.level.org.springframework.web=DEBUG" >> /icgc-storage-client/conf/application-aws.properties
 RUN echo "logging.level.com.amazonaws.services=TRACE" >> /icgc-storage-client/conf/application-aws.properties
+RUN echo "storage.retryNumber=30" >> /icgc-storage-client/conf/application-aws.properties
 
 RUN mkdir /scripts
 RUN wget https://raw.githubusercontent.com/baminou/dckr_song_upload/master/tools/upload_with_song2.py -O /scripts/upload
