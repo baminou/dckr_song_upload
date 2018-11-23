@@ -12,13 +12,25 @@ import subprocess
 import requests
 
 
-def create_manifest(api,analysis_id, manifest_file,files_dir):
-    manifest = Manifest(analysis_id)
+def create_manifest(api, analysis_id, payload_file, manifest_file,files_dir):
+    payload = json.load(open(payload_file))
+
     with open(os.path.join(files_dir,manifest_file), 'w') as outfile:
         outfile.write(analysis_id+'\t\t\n')
-        for i in range(0,len(api.get_analysis_files(analysis_id))):
-            file_object = api.get_analysis_files(analysis_id)[i]
-            outfile.write(file_object.objectId+'\t'+os.path.join(files_dir,file_object.fileName)+'\t'+file_object.fileMd5sum+'\n')
+        for i in range(0,len(payload.get('files'))):
+            file_object = payload.get('files')[i]
+            outfile.write(retrieve_object_id(api,analysis_id,
+                                             file_object.get('fileName'),
+                                             file_object.get('fileMd5sum'))+'\t'+os.path.join(files_dir,file_object.get('fileName'))+'\t'+file_object.get('fileMd5sum')+'\n')
+    return
+
+def retrieve_object_id(api, analysis_id, file_name, file_md5sum):
+    analysis = api.get_analysis(analysis_id).__dict__
+    for file in analysis.get('files'):
+        if file.get('fileName') == file_name and file.get('fileMd5sum') == file_md5sum:
+            return file.get('objectId')
+    raise Exception('The object id could not be found for '+file_name)
+
 
 def upload_payload(api, payload_file):
     api_upload = api.upload(json.load(open(payload_file)))
@@ -77,10 +89,12 @@ def main():
 
     if not api.get_analysis(analysis_id).__dict__['analysisState'] == "PUBLISHED":
         subprocess.check_output(['icgc-storage-client','upload','--manifest',os.path.join(results.input_dir,manifest_filename), '--force'])
-        try:
-            api.publish(analysis_id)
-        except:
-            pass
+        response = requests.put(server_url+'/studies/'+study_id+'/analysis/publish/'+analysis_id)
+        if response.status_code > 300:
+            raise Exception(response.text)
+
+    if api.get_analysis(analysis_id).__dict__['analysisState'] == "PUBLISHED":
+        raise Exception("The analysis %s has not been published correctly." % analysis_id)
 
     if results.json_output:
         with open(os.path.join(results.input_dir,manifest_filename),'r') as f:
