@@ -45,8 +45,8 @@ RUN echo "logging.level.org.springframework.web=DEBUG" >> /icgc-storage-client/c
 RUN echo "logging.level.com.amazonaws.services=TRACE" >> /icgc-storage-client/conf/application-aws.properties
 RUN echo "storage.retryNumber=30" >> /icgc-storage-client/conf/application-aws.properties
 RUN echo "transport.memory=5" >> /icgc-storage-client/conf/application-aws.properties
-RUN echo "client.connectTimeoutSeconds=1200" >> /icgc-storage-client/conf/application-aws.properties
-RUN echo "client.readTimeoutSeconds=1200" >> /icgc-storage-client/conf/application-aws.properties
+RUN echo "client.connectTimeoutSeconds=6000" >> /icgc-storage-client/conf/application-aws.properties
+RUN echo "client.readTimeoutSeconds=6000" >> /icgc-storage-client/conf/application-aws.properties
 
 RUN mkdir /scripts
 RUN wget https://raw.githubusercontent.com/baminou/dckr_song_upload/master/tools/upload_with_song2.py -O /scripts/upload
