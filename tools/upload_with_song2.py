@@ -85,7 +85,7 @@ def main():
         validate_payload_against_analysis(api, analysis_id, payload_file)
 
     manifest_filename = results.output
-    create_manifest(api,analysis_id,manifest_filename,results.input_dir)
+    create_manifest(api,analysis_id,payload_file,manifest_filename,results.input_dir)
 
     if not api.get_analysis(analysis_id).__dict__['analysisState'] == "PUBLISHED":
         subprocess.check_output(['icgc-storage-client','upload','--manifest',os.path.join(results.input_dir,manifest_filename), '--force'])
