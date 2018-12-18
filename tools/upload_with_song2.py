@@ -17,8 +17,8 @@ def create_manifest(api, analysis_id, payload_file, manifest_file,files_dir):
 
     with open(os.path.join(files_dir,manifest_file), 'w') as outfile:
         outfile.write(analysis_id+'\t\t\n')
-        for i in range(0,len(payload.get('files'))):
-            file_object = payload.get('files')[i]
+        for i in range(0,len(payload.get('file'))):
+            file_object = payload.get('file')[i]
             outfile.write(retrieve_object_id(api,analysis_id,
                                              file_object.get('fileName'),
                                              file_object.get('fileMd5sum'))+'\t'+os.path.join(files_dir,file_object.get('fileName'))+'\t'+file_object.get('fileMd5sum')+'\n')
@@ -26,9 +26,9 @@ def create_manifest(api, analysis_id, payload_file, manifest_file,files_dir):
 
 def retrieve_object_id(api, analysis_id, file_name, file_md5sum):
     analysis = api.get_analysis(analysis_id).__dict__
-    for file in analysis.get('files'):
-        if file.get('fileName') == file_name and file.get('fileMd5sum') == file_md5sum:
-            return file.get('objectId')
+    for file in analysis.get('file'):
+        if file.__dict__.get('fileName') == file_name and file.__dict__.get('fileMd5sum') == file_md5sum:
+            return file.__dict__.get('objectId')
     raise Exception('The object id could not be found for '+file_name)
 
 
