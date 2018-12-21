@@ -89,7 +89,7 @@ def main():
 
     if not api.get_analysis(analysis_id).__dict__['analysisState'] == "PUBLISHED":
         subprocess.check_output(['icgc-storage-client','upload','--manifest',os.path.join(results.input_dir,manifest_filename), '--force'])
-        response = requests.put(server_url+'/studies/'+study_id+'/analysis/publish/'+analysis_id)
+        response = requests.put(server_url+'/studies/'+study_id+'/analysis/publish/'+analysis_id,None, {'Authorization':'Bearer '+access_token})
         if response.status_code > 300:
             raise Exception(response.text)
 
